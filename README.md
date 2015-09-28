@@ -266,6 +266,10 @@ Cookies.withConverter({
 });
 ```
 
+## Server-side integration
+
+Check out the [Servers Docs](SERVERS.md)
+
 ## Contributing
 
 Check out the [Contributing Guidelines](CONTRIBUTING.md)
