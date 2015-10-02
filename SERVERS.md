@@ -40,7 +40,7 @@ Rack seems to have [a similar problem](https://github.com/js-cookie/js-cookie/is
 
 ## Tomcat 7.x
 
-It seems that there is a situation where Tomcat does not [read the parens correctly](https://github.com/js-cookie/js-cookie/issues/92#issue-107743407). To fix this you need to write a custom write converter:
+Tomcat 7.x implements [RFC 2068](http://tools.ietf.org/html/rfc2068#page-16) to decode cookies instead of [RFC 6265](http://tools.ietf.org/html/rfc6265#section-4.1.1). For that reason it does not [read the parens](https://github.com/js-cookie/js-cookie/issues/92#issue-107743407) and a [few other characters](https://github.com/js-cookie/js-cookie/issues/92#issuecomment-144998891) correctly. To fix this you need to write a custom write converter:
 
 ```javascript
 var Cookies = Cookies.withConverter({
@@ -48,8 +48,8 @@ var Cookies = Cookies.withConverter({
       // Encode all characters according to the "encodeURIComponent" spec
       return encodeURIComponent(value)
           // Revert the characters that are unnecessarly encoded but are
-          // allowed in a cookie value
-          .replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent)
+          // allowed in a cookie value (http://tools.ietf.org/html/rfc2068#page-16)
+          .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
           // Encode the parens that are interpreted incorrectly by Tomcat
           .replace(/[\(\)]/g, escape);
   }
